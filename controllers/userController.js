@@ -19,8 +19,8 @@ const userController ={
         })
     },
     delete:(req,res)=>{
-        const {username}=req.params;
-        User.deleteUser(username,(err,result)=>{
+        const {id}=req.params;
+        User.deleteUser(id,(err,result)=>{
             if (err) {
                 return res.status(500).send('Error finding particular user!');
             }
@@ -43,7 +43,7 @@ const userController ={
     PatchInfo:(req,res)=>{
         const{id}=req.params;
         const fields = req.body;
-        User.UpdatePartiall(id, fields, (err, result) => {
+        User.UpdatePartially(id, fields, (err, result) => {
         if (err) {
             console.error('Error updating user:', err);
             return res.status(500).send('Error updating user');

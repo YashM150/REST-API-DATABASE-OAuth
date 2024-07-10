@@ -23,7 +23,16 @@ app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/auth/google' }), (req, res) => {
         res.redirect('/api/data1');
     });
-
+app.get('/auth/github',
+        passport.authenticate('github', { scope: ['user:email'] })
+    );
+    
+app.get('/auth/github/callback',
+        passport.authenticate('github', { failureRedirect: '/auth/github' }),
+        (req, res) => {
+            res.redirect('/api/data1');
+        }
+    );
 // Use userRoutes for the '/api' path
 app.use('/api', userRoutes);
 

@@ -1,13 +1,23 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('../models/userModel.js');
+const GitHubStrategy = require('passport-github2').Strategy;
+const User = require('../models/userModel');
+
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+    User.findById(id, (err, user) => {
+        done(err, user);
+    });
+});
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "/auth/google/callback"
-},
-async (accessToken, refreshToken, profile, done) => {
+}, (accessToken, refreshToken, profile, done) => {
     const { id, emails } = profile;
     const email = emails[0].value;
 
@@ -15,28 +25,36 @@ async (accessToken, refreshToken, profile, done) => {
         if (err) return done(err);
 
         if (existingUser) {
-            // User already exists in the database
             return done(null, existingUser);
         } else {
-            // Create a new user in the database
-            User.create(id, email, accessToken, refreshToken, (err, newUser) => {
+            User.create(id, email, accessToken, refreshToken, true, (err, newUser) => {
                 if (err) return done(err);
-                return done(null,  { id, email });
+                return done(null, newUser);
             });
         }
     });
 }));
 
-passport.serializeUser((user, done) => {
-    console.log("Serialize User: ", user);
-    done(null, user.id);
-});
+passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: "/auth/github/callback"
+}, (accessToken, refreshToken, profile, done) => {
+    const { id, username } = profile;
+    const email = profile.emails ? profile.emails[0].value : `${username}@github.com`; // GitHub doesn't always return email
 
-passport.deserializeUser((id, done) => {
-    console.log("Deserialize User ID: ", id);
-    User.findById(id, (err, user) => {
-        done(err, user);
+    User.findByGitHubId(id, (err, existingUser) => {
+        if (err) return done(err);
+
+        if (existingUser) {
+            return done(null, existingUser);
+        } else {
+            User.create(id, email, accessToken, refreshToken, false, (err, newUser) => {
+                if (err) return done(err);
+                return done(null, newUser);
+            });
+        }
     });
-});
+}));
 
 module.exports = passport;
