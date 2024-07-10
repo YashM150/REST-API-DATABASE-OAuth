@@ -3,7 +3,7 @@ import React from 'react';
 function App() {
     
     const handleLogin = () => {
-        window.open('http://localhost:3000/auth/google', '_self');
+        window.open('http://localhost:3000/auth/google');
     };
 
 
