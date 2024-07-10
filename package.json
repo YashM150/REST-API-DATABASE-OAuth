@@ -1,0 +1,31 @@
+{
+  "name": "rest-api-database-2",
+  "version": "1.0.0",
+  "description": "a new epo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YashM150/REST-API-DATABASE-2.git"
+  },
+  "author": "yash moharil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YashM150/REST-API-DATABASE-2/issues"
+  },
+  "homepage": "https://github.com/YashM150/REST-API-DATABASE-2#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "fs-extra": "^11.2.0",
+    "mssql": "^11.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
