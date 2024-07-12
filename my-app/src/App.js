@@ -8,6 +8,9 @@ function App() {
     const handleLogin1 = () => {
         window.open('http://localhost:3000/auth/github');
     };
+    const handleLogout = () => {
+        window.open('http://localhost:3000/logout', '_self');
+    };
 
     return (
         <div>
@@ -16,6 +19,10 @@ function App() {
                     <h1>Login Through OAuth</h1>
                     <button onClick={handleLogin} className='butn'>Login with Google</button>
                     <button onClick={handleLogin1} className='butn'>Login with GITHub</button>
+
+
+                    <button onClick={handleLogout} className='butn'>Logout</button>
+
                 </div>
             </div>
            

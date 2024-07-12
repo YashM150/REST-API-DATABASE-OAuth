@@ -16,8 +16,9 @@ passport.deserializeUser((id, done) => {
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    passReqToCallback: true, // This means the callback will receive the req object
     callbackURL: "/auth/google/callback"
-}, (accessToken, refreshToken, profile, done) => {
+}, (req, accessToken, refreshToken, profile, done) => { // Note the addition of req here
     const { id, emails } = profile;
     const email = emails[0].value;
 
@@ -25,10 +26,13 @@ passport.use(new GoogleStrategy({
         if (err) return done(err);
 
         if (existingUser) {
+            console.log(accessToken);
             return done(null, existingUser);
         } else {
             User.create(id, email, accessToken, refreshToken, true, (err, newUser) => {
                 if (err) return done(err);
+                
+                User.accessToken = accessToken;
                 return done(null, newUser);
             });
         }

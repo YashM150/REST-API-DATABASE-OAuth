@@ -77,6 +77,9 @@ const userController ={
                     }
             res.status(200).send('User updated');
         });
+    },
+    token:(req,res)=>{
+        
     }
 }
 module.exports = userController;

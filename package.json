@@ -19,11 +19,13 @@
   "homepage": "https://github.com/YashM150/REST-API-DATABASE-OAuth#readme",
   "dependencies": {
     "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "fs-extra": "^11.2.0",
+    "google-auth-library": "^9.11.0",
     "mssql": "^11.0.1",
     "mysql2": "^3.10.2",
     "npx": "^10.2.2",
