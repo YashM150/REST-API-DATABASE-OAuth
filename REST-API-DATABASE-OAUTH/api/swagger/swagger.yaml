@@ -1,200 +1,182 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
-  title: User API
-  description: API documentation for managing users in a Node.js, Express, React.js, and MySQL application.
+  title: OAuth API
+  description: API documentation for managing users with OAuth authentication using Google and GitHub.
+
 servers:
-  - url: http://localhost:3000/api
+  - url: http://localhost:3000
     description: Local server
 
 paths:
-  /users:
+  /auth/google:
     get:
-      summary: Retrieve all users
-      description: Fetch a list of all users from the database.
-      security:
-        - bearerAuth: []
+      summary: Google OAuth login
+      description: Initiate Google OAuth authentication.
+      responses:
+        '302':
+          description: Redirect to Google for authentication
+
+  /auth/google/callback:
+    get:
+      summary: Google OAuth callback
+      description: Handle Google OAuth callback and return user info.
       responses:
         '200':
-          description: List of users.
+          description: User authenticated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+
+  /auth/github:
+    get:
+      summary: GitHub OAuth login
+      description: Initiate GitHub OAuth authentication.
+      responses:
+        '302':
+          description: Redirect to GitHub for authentication
+
+  /auth/github/callback:
+    get:
+      summary: GitHub OAuth callback
+      description: Handle GitHub OAuth callback and return user info.
+      responses:
+        '200':
+          description: User authenticated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+
+  /api/users:
+    get:
+      summary: Get all users
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of users
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '500':
+          description: Internal server error
 
-  /user/findUser/{id}:
+  /api/user/{id}:
     get:
-      summary: Retrieve a user by ID
-      description: Fetch a user from the database by their ID.
+      summary: Get user by ID
       security:
-        - bearerAuth: []
+        - cookieAuth: []
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
           schema:
-            type: integer
-          description: The user ID.
+            type: string
       responses:
         '200':
-          description: A single user.
+          description: User found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '404':
-          description: User not found.
+          description: User not found
+        '500':
+          description: Internal server error
 
-  /user/deleteUser/{id}:
     delete:
       summary: Delete user by ID
-      description: Delete a user from the database by their ID.
       security:
-        - bearerAuth: []
+        - cookieAuth: []
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
           schema:
-            type: integer
-          description: The user ID.
+            type: string
       responses:
         '200':
-          description: A single user deleted.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+          description: User deleted
         '404':
-          description: User not found.
-
-  /user/UpdateInfoUser/{id}:
+          description: User not found
+        '500':
+          description: Internal server error
     patch:
-      summary: Update a user by ID partially
-      description: Update a user's info partially from the database by their ID.
+      summary: Partially update user by ID
       security:
-        - bearerAuth: []
+        - cookieAuth: []
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
           schema:
-            type: integer
-          description: The user ID.
+            type: string
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserInput'
+              $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: A single user.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+          description: User updated
         '404':
-          description: User not found.
+          description: User not found
+        '500':
+          description: Internal server error
 
-  /user/UpdateInfo/{id}:
     put:
-      summary: Update a user by ID
-      description: Update a user's info completely from the database by their ID.
+      summary: Fully update user by ID
       security:
-        - bearerAuth: []
+        - cookieAuth: []
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
           schema:
-            type: integer
-          description: The user ID.
+            type: string
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserInput'
+              $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: A single user's updated information.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '404':
-          description: User not found.
+          description: User updated
+        '201':
+          description: User created
+        '500':
+          description: Internal server error
 
-  /user/AddInfo:
+  /api/users:
     post:
-      summary: Add a user's Information
-      description: Add a new user to the database.
+      summary: Add new user
       security:
-        - bearerAuth: []
+        - cookieAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserInput'
+              $ref: '#/components/schemas/User'
       responses:
         '201':
-          description: User created successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+          description: User created
+        '500':
+          description: Internal server error
 
-  /registeruser:
-    post:
-      summary: Add a user
-      description: Add a new user to the database.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserInputs'
-      responses:
-        '201':
-          description: User created successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User1'
-
-  /login:
-    post:
-      summary: User login
-      description: Login a user and get a token.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserInputs'
-      responses:
-        '201':
-          description: User logged in successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-                    example: your.jwt.token
 
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
   schemas:
     User:
       type: object
@@ -205,51 +187,40 @@ components:
         name:
           type: string
           example: John Doe
+        email:
+          type: string
+          example: johndoe@example.com
         gender:
           type: string
-          example: Male
+          example: male
         bloodgroup:
           type: string
-          example: AB+ve
-        username:
-          type: string
-          example: Yash123
+          example: O+
 
-    User1:
-      type: object
-      properties:
-        username:
-          type: string
-          example: Yash123
-        password:
-          type: string
-          example: qwerty
+  securitySchemes:
+    googleOAuth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts.google.com/o/oauth2/auth
+          tokenUrl: https://oauth2.googleapis.com/token
+          scopes:
+            email: Access user's email
+            profile: Access user's profile
 
-    UserInput:
-      type: object
-      properties:
-        name:
-          type: string
-          example: John Doe
-        gender:
-          type: string
-          example: Male
-        bloodgroup:
-          type: string
-          example: AB+ve
-        username:
-          type: string
-          example: Yash123
+    githubOAuth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://github.com/login/oauth/authorize
+          tokenUrl: https://github.com/login/oauth/access_token
+          scopes:
+            user: Access user's profile
 
-    UserInputs:
-      type: object
-      properties:
-        username:
-          type: string
-          example: Yash123
-        password:
-          type: string
-          example: qwerty
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
 
 security:
-  - bearerAuth: []
+  - cookieAuth: []

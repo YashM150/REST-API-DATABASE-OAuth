@@ -7,19 +7,24 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('../REST-API-DATABASE-OAUTH/api/routes/userRoutes');
 const passport = require('./config/passport');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const path = require('path');
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(session({
     secret: 'your_secret_key',
     resave: false,
     saveUninitialized: true
 }));
-module.exports = app; // for testing
+
 
 var config = {
   appRoot: __dirname // required config
@@ -77,10 +82,19 @@ app.use((req, res, next) => {
     next();
 });
 
-// Define routes here
+var config = {
+    appRoot: __dirname // required config
+  };
+  
+ // Load the swagger.yml file
+ const swaggerDocument = YAML.load(path.join(__dirname, 'api', 'swagger', 'swagger.yaml'));
+// Serve the Swagger UI documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 
 app.listen(3000, () => {
     console.log('Server started on http://localhost:3000');
 });
+
+module.exports = app; // for testing

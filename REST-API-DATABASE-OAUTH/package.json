@@ -8,7 +8,6 @@
   "license": "ISC",
   "main": "app.js",
   "dependencies": {
-    "swagger-express-mw": "^0.1.0",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -24,7 +23,8 @@
     "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",
     "react": "^18.3.1",
-    "swagger-router": "^0.7.4" ,
+    "swagger-express-mw": "^0.1.0",
+    "swagger-router": "^0.7.4",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0"
   },
