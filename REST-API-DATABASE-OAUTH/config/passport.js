@@ -16,28 +16,29 @@ passport.deserializeUser((id, done) => {
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    passReqToCallback: true, // This means the callback will receive the req object
     callbackURL: "/auth/google/callback"
-}, (req, accessToken, refreshToken, profile, done) => { // Note the addition of req here
+}, (req, accessToken, refreshToken, profile, done) => {
     const { id, emails } = profile;
     const email = emails[0].value;
 
     User.findByGoogleId(id, (err, existingUser) => {
         if (err) return done(err);
-
         if (existingUser) {
-            console.log(accessToken);
+            accessToken = existingUser.access_token;
+            console.log('existing user:',existingUser);
+            console.log('Existing user, accessToken:', existingUser.access_token);
             return done(null, existingUser);
         } else {
-            User.create(id, email, accessToken, refreshToken, true, (err, newUser) => {
+            console.log('refresh token_passport:',refreshToken.access_token);
+            User.create(id, email, refreshToken.access_token, refreshToken.id_token, true, (err, newUser) => {
                 if (err) return done(err);
-                
-                User.accessToken = accessToken;
+                console.log('New user created, accessToken:', newUser.accessToken);
                 return done(null, newUser);
             });
         }
     });
 }));
+
 
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,

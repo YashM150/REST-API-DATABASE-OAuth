@@ -1,3 +1,4 @@
+# Skeleton project for Swagger
 # Project NODE JS-REACTJS-MYSQL-OAUTH IMPLEMENTATION
 
 ## Project Overview

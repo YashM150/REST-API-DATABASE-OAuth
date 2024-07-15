@@ -1,6 +1,16 @@
 const db = require('../config/db');
 
 const User = {
+    findByAccessToken: (accessToken, callback) => {
+        db.query('SELECT * FROM users WHERE access_token = ?', [accessToken], (err, results) => {
+            if (err) return callback(err, null);
+            if (results.length > 0) {
+                return callback(null, results[0]);
+            } else {
+                return callback(null, null);
+            }
+        });
+    },
     findById: (id, callback) => {
         db.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {
             if (err) return callback(err, null);
@@ -33,14 +43,18 @@ const User = {
     },
     create: (oauthId, email, accessToken, refreshToken, isGoogle, callback) => {
         const column = isGoogle ? 'google_id' : 'github_id';
+        console.log('access_token_model:',accessToken);
         const query = `INSERT INTO users (${column}, email, access_token, refresh_token) VALUES (?, ?, ?, ?)`;
         db.query(query, [oauthId, email, accessToken, refreshToken], (err, results) => {
-            if (err) return callback(err, null);
+            if (err) {
+                console.error('Error inserting user:', err);
+                return callback(err, null);
+            }
             return callback(null, { id: results.insertId, email, accessToken, refreshToken });
         });
     },
     AddUser: ([name, email, bloodgroup, gender], callback) => {
-        db.query('INSERT INTO demo (name, email, bloodgroup, gender) VALUES (?, ?, ?, ?)', [name, email, bloodgroup, gender], (err, result) => {
+        db.query('INSERT INTO users_info (name, email, bloodgroup, gender) VALUES (?, ?, ?, ?)', [name, email, bloodgroup, gender], (err, result) => {
             if (err) {
                 console.error('Error adding user:', err);
                 return callback(err, null);
@@ -49,7 +63,7 @@ const User = {
         });
     },
     findAll: (callback) => {
-        db.query('SELECT * FROM demo', (err, results) => {
+        db.query('SELECT * FROM users_info', (err, results) => {
             if (err) {
                 console.error('Error finding all users:', err);
                 return callback(err, null);
@@ -58,7 +72,7 @@ const User = {
         });
     },
     findUser: (id, callback) => {
-        db.query('SELECT * FROM demo WHERE user_id = ?', [id], (err, results) => {
+        db.query('SELECT * FROM users_info WHERE user_id = ?', [id], (err, results) => {
             if (err) {
                 console.error('Error finding user by ID:', err);
                 return callback(err, null);
@@ -67,7 +81,7 @@ const User = {
         });
     },
     deleteUser: (id, callback) => {
-        db.query('DELETE FROM demo WHERE (user_id = ?)', [id], (err, result) => {
+        db.query('DELETE FROM users_info WHERE (user_id = ?)', [id], (err, result) => {
             if (err) {
                 console.error('Error deleting user:', err);
                 return callback(err, null);
@@ -79,7 +93,7 @@ const User = {
         const setClause = Object.keys(fields).map(key => `${key} = ?`).join(', ');
         const values = Object.values(fields);
         values.push(id);
-        const sql = `UPDATE demo SET ${setClause} WHERE user_id = ?`;
+        const sql = `UPDATE users_info SET ${setClause} WHERE user_id = ?`;
 
         db.query(sql, values, (err, result) => {
             if (err) {

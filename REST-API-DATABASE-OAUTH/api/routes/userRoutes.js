@@ -10,5 +10,4 @@ router.put('/user/:id', ensureAuthenticated, userController.PutInfo);
 router.patch('/user/:id', ensureAuthenticated, userController.PatchInfo);
 router.delete('/user/:id', ensureAuthenticated, userController.delete);
 
-
 module.exports = router;

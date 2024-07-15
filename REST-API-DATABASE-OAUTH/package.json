@@ -1,23 +1,14 @@
 {
   "name": "rest-api-database-2",
   "version": "1.0.0",
-  "description": "a new epo",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"nodemon server.js\" \"cd my-app/npm run start\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/YashM150/REST-API-DATABASE-OAuth.git"
-  },
+  "private": false,
+  "description": "New Swagger API Project",
+  "keywords": [],
   "author": "yash moharil",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/YashM150/REST-API-DATABASE-OAuth/issues"
-  },
-  "homepage": "https://github.com/YashM150/REST-API-DATABASE-OAuth#readme",
+  "main": "app.js",
   "dependencies": {
+    "swagger-express-mw": "^0.1.0",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -32,10 +23,23 @@
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",
-    "react": "^18.3.1"
+    "react": "^18.3.1",
+    "swagger-router": "^0.7.4" ,
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "should": "^7.1.0",
+    "supertest": "^1.0.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "swagger project test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YashM150/REST-API-DATABASE-OAuth.git"
   }
 }

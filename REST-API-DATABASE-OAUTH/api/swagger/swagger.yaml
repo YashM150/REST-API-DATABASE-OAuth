@@ -1,0 +1,255 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: User API
+  description: API documentation for managing users in a Node.js, Express, React.js, and MySQL application.
+servers:
+  - url: http://localhost:3000/api
+    description: Local server
+
+paths:
+  /users:
+    get:
+      summary: Retrieve all users
+      description: Fetch a list of all users from the database.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /user/findUser/{id}:
+    get:
+      summary: Retrieve a user by ID
+      description: Fetch a user from the database by their ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The user ID.
+      responses:
+        '200':
+          description: A single user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found.
+
+  /user/deleteUser/{id}:
+    delete:
+      summary: Delete user by ID
+      description: Delete a user from the database by their ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The user ID.
+      responses:
+        '200':
+          description: A single user deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found.
+
+  /user/UpdateInfoUser/{id}:
+    patch:
+      summary: Update a user by ID partially
+      description: Update a user's info partially from the database by their ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The user ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: A single user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found.
+
+  /user/UpdateInfo/{id}:
+    put:
+      summary: Update a user by ID
+      description: Update a user's info completely from the database by their ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The user ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: A single user's updated information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found.
+
+  /user/AddInfo:
+    post:
+      summary: Add a user's Information
+      description: Add a new user to the database.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: User created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /registeruser:
+    post:
+      summary: Add a user
+      description: Add a new user to the database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInputs'
+      responses:
+        '201':
+          description: User created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User1'
+
+  /login:
+    post:
+      summary: User login
+      description: Login a user and get a token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInputs'
+      responses:
+        '201':
+          description: User logged in successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: your.jwt.token
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+        gender:
+          type: string
+          example: Male
+        bloodgroup:
+          type: string
+          example: AB+ve
+        username:
+          type: string
+          example: Yash123
+
+    User1:
+      type: object
+      properties:
+        username:
+          type: string
+          example: Yash123
+        password:
+          type: string
+          example: qwerty
+
+    UserInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Doe
+        gender:
+          type: string
+          example: Male
+        bloodgroup:
+          type: string
+          example: AB+ve
+        username:
+          type: string
+          example: Yash123
+
+    UserInputs:
+      type: object
+      properties:
+        username:
+          type: string
+          example: Yash123
+        password:
+          type: string
+          example: qwerty
+
+security:
+  - bearerAuth: []
